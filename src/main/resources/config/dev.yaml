@@ -1,0 +1,7 @@
+salesforce:
+  username: "siddhartha.pal@nttdata.com.sachin"
+  password: "![RVbPEt/W5fMjm+DGcSzZ4g==]"
+  token: "![x6udxgMOI/W5Qk+S7xnM+ZOIMS+yhoqIQskQtxDdITY=]"
+  url: "https://principalwine--sachin.sandbox.my.salesforce.com/services/Soap/u/58.0"
+  account-event: "/data/AccountChangeEvent"
+  contact-event: "/data/ContactChangeEvent"
