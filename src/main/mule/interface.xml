@@ -39,23 +39,9 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="post:\customers:application\json:cin7-prc-api-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  success: true,
-  apiName: "pw-cin7-exp-api",
-  version: "v1.0.0",
-  correlationId: "05c09130-75a2-11eb-9dcf-aed564bf8171",
-  timestamp: "1970-01-01T00:00:01.001-06:00",
-  data: {
-    message: "Resource created"
-  }
-} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+		<logger level="INFO" doc:name="Log Start" doc:id="bfacd2e2-317e-4ae5-949f-07b1ece1b82d" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "ENTRY",&#10;  MetaData: "Started customer, contact and address upsert in salesforce",&#10;  correlationId: correlationId&#10;}]' />
+		<flow-ref doc:name="customer-contact-address-implementation-subflow" doc:id="0e38c5ce-6c78-4f0f-bbbe-fa404844da78" name="customer-contact-address-implementation-subflow"/>
+		<logger level="INFO" doc:name="Log Exit" doc:id="f6502142-a996-4d90-9626-dd2d2f1771c0" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "EXIT",&#10;  MetaData: "Ended customer, contact and address upsert in salesforce",&#10;  correlationId: correlationId&#10;}]' />
     </flow>
     <flow name="post:\products:application\json:cin7-prc-api-config">
         <ee:transform doc:name="Transform Message">
