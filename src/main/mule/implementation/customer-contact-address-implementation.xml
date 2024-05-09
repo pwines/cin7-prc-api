@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="customer-contact-address-implementation-subflow" doc:id="63d04d4f-ca6c-4bc3-b7e6-1e39fb978c1b" >
-		<ee:transform doc:name="Customer, contact and address Mapping to Salesforce" doc:id="608fdd75-2c12-408f-90dc-4230da886a6b" >
+		<ee:transform doc:name="Customer, contact, location and address Mapping to Salesforce" doc:id="608fdd75-2c12-408f-90dc-4230da886a6b" >
 			<ee:message >
 			</ee:message>
 			<ee:variables >
@@ -73,8 +73,18 @@ AddressType: item.Type,
 DefaultForType__c: item.DefaultForType
 })
  )]]></ee:set-variable>
+				<ee:set-variable variableName="location" ><![CDATA[%dw 2.0
+output application/json
+---
+    payload.LocationList map ((item, index) ->{
+    Cin7ID__c: item.ID,
+Name: item.Name,
+IsDefault__c: item.IsDefault
+})]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
+		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "objectName": "Location",&#10;  "externalField": "Cin7ID__c",&#10;  "data": vars.location&#10;}]' doc:name="Set Location upsert Payload" doc:id="4aa9e0c5-2caa-4143-b442-5acb2df1182c" />
+		<flow-ref doc:name="request-to-salesforce-upsert-subflow" doc:id="3919e2f6-f4f4-4e90-9048-c7621f35fc8e" name="request-to-salesforce-upsert-subflow"/>
 		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "objectName": "Account",&#10;  "externalField": "Cin7ID__c",&#10;  "data": [vars.customer[1][0] ++ {&#10;    Default_Location__r: {&#10;        Cin7ID__c: payload[0][0].location&#10;    }&#10;}]&#10;}]' doc:name="Set Customer upsert Payload" doc:id="e080c907-06ba-4b87-b984-70555b9a6120" />
 		<flow-ref doc:name="request-to-salesforce-upsert-subflow" doc:id="43afe35e-d8cd-4fd9-9fb2-d10f4f4933b7" name="request-to-salesforce-upsert-subflow"/>
 		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{(payload map (item) -&gt; {&#10;  "objectName": "Account",&#10;  "externalField": "Cin7ID__c",&#10;  "data": item.Data map ((contact) -&gt; contact ++ {Account: {"Cin7ID__c": item.account__c}})&#10;})}]' doc:name="Set Contacts upsert Payload" doc:id="61104825-77cc-4200-b8ff-14df29aaf6bb" />
