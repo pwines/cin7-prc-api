@@ -33,7 +33,8 @@ Include_In_Emails__c:item.IncludeInEmail,
  ))]]></ee:set-variable>
 				<ee:set-variable variableName="customer" ><![CDATA[%dw 2.0
 output application/json
----
+---[
+    payload.LocationList map ((item, index) ->{location: item.ID}),
 payload.CustomerDetailsList map ((item, index) -> 
 {
     Cin7ID__c: item.ID,
@@ -55,7 +56,7 @@ Default_Carrier__c: item.Carrier,
 Sales_Representative__c: item.SalesRepresentative,
 Tax_number__c: item.TaxNumber,
 LastModifiedOn__c: item.LastModifiedOn
-})]]></ee:set-variable>
+})]]]></ee:set-variable>
 				<ee:set-variable variableName="address" ><![CDATA[%dw 2.0
 output application/json
 ---
@@ -74,7 +75,7 @@ DefaultForType__c: item.DefaultForType
  )]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "objectName": "Account",&#10;  "externalField": "Cin7ID__c",&#10;  "data": vars.customer&#10;}]' doc:name="Set Customer upsert Payload" doc:id="e080c907-06ba-4b87-b984-70555b9a6120" />
+		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "objectName": "Account",&#10;  "externalField": "Cin7ID__c",&#10;  "data": [vars.customer[1][0] ++ {&#10;    Default_Location__r: {&#10;        Cin7ID__c: payload[0][0].location&#10;    }&#10;}]&#10;}]' doc:name="Set Customer upsert Payload" doc:id="e080c907-06ba-4b87-b984-70555b9a6120" />
 		<flow-ref doc:name="request-to-salesforce-upsert-subflow" doc:id="43afe35e-d8cd-4fd9-9fb2-d10f4f4933b7" name="request-to-salesforce-upsert-subflow"/>
 		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{(payload map (item) -&gt; {&#10;  "objectName": "Account",&#10;  "externalField": "Cin7ID__c",&#10;  "data": item.Data map ((contact) -&gt; contact ++ {Account: {"Cin7ID__c": item.account__c}})&#10;})}]' doc:name="Set Contacts upsert Payload" doc:id="61104825-77cc-4200-b8ff-14df29aaf6bb" />
 		<flow-ref doc:name="request-to-salesforce-upsert-subflow" doc:id="3760dfa9-d4d4-432d-ae0d-d8dc3f226cf9" name="request-to-salesforce-upsert-subflow"/>
