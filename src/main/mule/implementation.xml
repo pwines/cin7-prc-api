@@ -31,6 +31,6 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	</flow>
 	<flow name="implementationFlow" doc:id="c8eceec3-e9eb-4af7-af91-f18557c104d6" >
 		<http:listener doc:name="Listener" doc:id="d271c141-fd8b-4594-a3ff-f946b42b07bc" config-ref="HTTP_Listener_config" path="/test"/>
-		<flow-ref doc:name="Flow Reference" doc:id="0400a7c3-4d60-4f27-b733-12cd1bcf851d" name="account-change-event-flow"/>
+		<flow-ref doc:name="Flow Reference" doc:id="0400a7c3-4d60-4f27-b733-12cd1bcf851d" name="send-email-subflow"/>
 	</flow>
 </mule>

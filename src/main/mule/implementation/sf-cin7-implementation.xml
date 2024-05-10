@@ -21,14 +21,7 @@ vars.requestPayload.httpRequest.headers]]]></http:headers>
 		</until-successful>
 			<choice doc:name="Choice" doc:id="a9c47974-fd5c-468c-b084-ce44c5945431" >
 				<when expression="#[attributes.statusCode == 200 or attributes.statusCode == 201]">
-					<ee:transform doc:name="Transform Message" doc:id="506ebff8-7520-4ec3-86b6-779711478bea">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-payload]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+					<ee:dynamic-evaluate doc:name="Dynamic Evaluate" doc:id="4c2a7c2b-8c61-4f0a-99f4-bd7e0e130b58" expression="#[readUrl(&quot;classpath://dwls/&quot; ++ (vars.requestPayload.responseDwl as String) ++ &quot;.dwl&quot;, 'text/plain')]"/>
 					<flow-ref doc:name="request-to-salesforce-upsert-subflow" doc:id="0541afa4-8ffe-4923-b631-0f5914a69b40" name="request-to-salesforce-upsert-subflow" />
 				</when>
 				<otherwise >

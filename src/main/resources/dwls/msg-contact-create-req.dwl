@@ -3,7 +3,7 @@ output application/json
 var contact = payload.requestBody.payload
 ---
 {
-	ID: "",
+	ID: contact.Cin7_AccountID__c,
 	Contacts: [
 		{
 			Email: contact.Email,
@@ -11,7 +11,8 @@ var contact = payload.requestBody.payload
 		    IncludeInEmail: contact.Include_In_Emails__c,
 			Comment: contact.Comment__c,
 			MobilePhone: contact.MobilePhone,
-			Name: contact.Name,
+			Name: if(!isEmpty(contact.Name.FirstName))contact.Name.FirstName ++ " " ++ contact.Name.LastName
+				  else contact.Name.LastName,
 			Phone: contact.Phone,
 			Fax: contact.Fax,
 			Website: contact.Website__c,
