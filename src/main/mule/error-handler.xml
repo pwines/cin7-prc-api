@@ -88,4 +88,18 @@ output application/json
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="15e2b2e9-64bc-4812-9eac-c341a9131d78" type="ANY">
+			<ee:transform doc:name="Transform Message" doc:id="1490634c-5e17-41c2-afb6-53588f9edfa2" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	errorCode: error.muleMessage.typedAttributes.statusCode default 500,
+	errorDescription: error.muleMessage.typedAttributes.reasonPhrase default error.description,
+	message: vars.errorContext default "Error occured while processing the request in cin7-process-api"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
         </error-handler></mule>
