@@ -88,4 +88,20 @@ output application/json
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
-        </error-handler></mule>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0c19ffb3-90d9-4640-88b3-89dd8ccfa784" type="ANY" >
+			<ee:transform doc:name="Error Payload" doc:id="f6b2a0c5-fbca-4d76-b6bc-60f4af447993" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	errorCode: error.muleMessage.typedAttributes.statusCode default 500,
+	errorDescription: error.muleMessage.typedAttributes.reasonPhrase default error.description,
+	message: vars.errorContext default "Error occurred while processing the request in PW-salesforce-sys-api"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<logger level="INFO" doc:name="Log Error " doc:id="540d4412-2326-4793-9505-7437fb81e660" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "ERROR",&#10;  MetaData: "Error Occurred",&#10;  correlationId: correlationId,&#10;  data: payload&#10;}]' />
+		</on-error-propagate>
+        
+</error-handler></mule>

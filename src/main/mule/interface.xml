@@ -37,6 +37,7 @@ output application/json
     </flow>
     <flow name="post:\customers:application\json:cin7-prc-api-config">
 		<logger level="INFO" doc:name="Log Start" doc:id="1f1b2425-0059-431f-ba88-7864837fc7f5" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "ENTRY",&#10;  MetaData: "Started upsert in customer, contact and address object in salesforce",&#10;  correlationId: correlationId&#10;}]' />
+		<flow-ref doc:name="check-sales-represtative-subflow" doc:id="71e1e014-a6ec-40bd-9748-37905ca4cbfa" name="check-sales-representative-subflow"/>
 		<flow-ref doc:name="customer-contact-address-implementation-subflow" doc:id="824b5138-a716-4242-9de0-eddea7295986" name="customer-contact-address-implementation-subflow"/>
 		<logger level="INFO" doc:name="Log Exit" doc:id="adb67f49-4915-48f2-8a29-aaeb2d48b81b" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "EXIT",&#10;  MetaData: "Ended upsert in customer, contact and address object in salesforce",&#10;  correlationId: correlationId&#10;}]' />
     </flow>
