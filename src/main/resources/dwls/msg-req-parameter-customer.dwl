@@ -23,5 +23,6 @@ var operationName = payload.data.payload.ChangeEventHeader.changeType as String 
 	"operation": operationName,
 	"dwl": Mule::p("operation.$(operationName).dwl") as String,
 	"responseDwl": Mule::p("operation.$(operationName).sfDwl") as String,
+	"errDwl": Mule::p("operation.$(operationName).errDwl") as String,
 	"requestBody": payload.data
 }

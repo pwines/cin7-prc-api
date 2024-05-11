@@ -9,9 +9,9 @@ var request = vars.requestPayload.requestBody.payload
   "data": [
     {
       "Id": request.ChangeEventHeader.recordIds[0],
-      "Cin7ID__c": payload.data.id,
-      "Sales_Representative__c": payload.SalesRepresentative,
-      "OwnerId": if(isEmpty(payload.SalesRepresentative)) "" else payload.SalesRepresentative
+      "Cin7ID__c": payload.data.ID,
+      //"Sales_Representative__c": payload.data.SalesRepresentative,
+      //"OwnerId": if(isEmpty(payload.data.SalesRepresentative)) "" else payload.data.SalesRepresentative
       
     }
   ]

@@ -4,7 +4,7 @@ skipNullOn="everywhere"
 var contact = payload.requestBody.payload
 ---
 {
-	ID: contact.Cin7_AccountID__c,,
+	ID: contact.Cin7_AccountID__c,
 	Contacts: [
 		{
 		    ID: contact.Cin7ID__c,

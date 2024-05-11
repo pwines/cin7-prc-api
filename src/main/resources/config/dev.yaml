@@ -1,3 +1,6 @@
+app:
+  autodiscovery: "19492437"
+
 salesforce:
   username: "siddhartha.pal@nttdata.com.sachin"
   password: "![ItAaX7qTsEywysnn8T89eQ==]"
@@ -19,22 +22,26 @@ operation:
   CREATE-CUSTOMER:
     dwl: "msg-customer-create-req"
     sfDwl: "msg-sf-customer-create-req"
+    errDwl: "err-sf-customer-create-req"
     path: "/api/customers"
     
     
   UPDATE-CUSTOMER:
     dwl: "msg-customer-update-req"
     sfDwl: "msg-sf-customer-update-req"
+    errDwl: "err-sf-customer-update-req"
     path: "/api/customers"
     
   CREATE-CONTACT:
     dwl: "msg-contact-create-req"
     sfDwl: "msg-sf-contact-create-req"
+    errDwl: "err-sf-contact-create-req"
     path: "/api/contacts"
     
   UPDATE-CONTACT:
     dwl: "msg-contact-update-req"
     sfDwl: "msg-sf-contact-update-req"
+    errDwl: "err-sf-contact-update-req"
     path: "/api/contacts"
     
 cin7-sys-api:

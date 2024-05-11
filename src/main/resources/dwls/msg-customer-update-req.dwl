@@ -1,9 +1,11 @@
 %dw 2.0
 output application/json
+skipNullOn="everywhere"
+
 var item = payload.requestBody.payload
 ---
 {
-    ID: item.Cin7_ID__c,
+    ID: item.Cin7ID__c,
     Name: item.Name,
     Currency: item.Currency__c,
     PaymentTerm: item.Payment_Term__c,
