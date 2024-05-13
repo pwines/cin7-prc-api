@@ -18,6 +18,9 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 					<http:headers ><![CDATA[#[output application/java
 ---
 vars.requestPayload.httpRequest.headers]]]></http:headers>
+					<http:response-validator >
+						<http:success-status-code-validator values="${request.response.values}"/>
+					</http:response-validator>
 				</http:request>
 		</until-successful>
 			<logger level="DEBUG" doc:name="Log Inbound" doc:id="8ffdc2a5-ebfc-4593-84b0-10eda5468b1b" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "Log Inbound",&#10;  MetaData: "Request to cin system api completed",&#10;  correlationId: correlationId,&#10;  data: payload&#10;}]'/>

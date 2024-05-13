@@ -49,3 +49,7 @@ cin7-sys-api:
   protocol: "https"
   client_id: "![V/IFXu3qOniFumDV7Xy3Q7/3mUfmRnfIm5DAAgm0yCybiQeKOJKlpg==]"
   client_secret: "![Z+DnxnnqhhJLgjvsIu4CwTjf5KknJoRHEKlwpRtp8hQjjd73tuM++w==]"
+  
+request:
+  response:
+    values: '0..599'

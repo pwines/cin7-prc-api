@@ -55,6 +55,7 @@ On_Credit_Hold__c:item.IsOnCreditHold,
 Price_tier__c: item.PriceTier,
 Default_Carrier__c: item.Carrier,
 Sales_Representative__c: if(sizeOf(vars.query)== 1)vars.query[0].Id else vars.query[0].Id,
+OwnerId: if(sizeOf(vars.query)== 1)vars.query[0].Id else vars.query[0].Id,
 Tax_number__c: item.TaxNumber,
 LastModifiedOn__c: item.LastModifiedOn,
 "Revenue_Account__c": dl::getAccountType(item.RevenueAccount as String),
@@ -194,7 +195,7 @@ output application/json
 	"objectName": "User",
 	"fields" : "Id, Name",
 	"where": {
-	"Name" : payload.CustomerDetailsList[0].SalesRepresentative ++ "','James Robinson"
+	"Name" : vars.salesRepresentative ++ "','James Robinson"
 }
 }]]></ee:set-variable>
 			</ee:variables>
