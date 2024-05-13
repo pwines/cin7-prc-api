@@ -6,8 +6,8 @@ salesforce:
   password: "![ItAaX7qTsEywysnn8T89eQ==]"
   token: "![VaF4aS6gYQeAwFtFlIkTb+xzP8DRx8oNePxa6wSHz7M=]"
   url: "https://principalwine--sachin.sandbox.my.salesforce.com/services/Soap/u/58.0"
-  account-event: "/data/AccountChangeEvent"
-  contact-event: "/data/ContactChangeEvent"
+  account-event: "/data/Cin7Events__chn"
+  contact-event: "/data/Cin7Events__chn"
   
 sfdc:
   basepath: "/api/v1"

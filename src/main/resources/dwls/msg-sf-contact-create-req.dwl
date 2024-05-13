@@ -12,6 +12,7 @@ var resPayload = payload.data filter((item) -> item.Name == reqUserName)
     {
       "Id": request.ChangeEventHeader.recordIds[0],
       "Cin7ID__c": resPayload[0].ID,
+      "LastModifiedOn__c": resPayload[0].LastModifiedOn,
       "Account": {
         "Cin7ID__c": request.Cin7_AccountID__c
       }

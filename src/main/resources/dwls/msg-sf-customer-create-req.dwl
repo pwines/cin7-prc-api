@@ -10,8 +10,12 @@ var request = vars.requestPayload.requestBody.payload
     {
       "Id": request.ChangeEventHeader.recordIds[0],
       "Cin7ID__c": payload.data.ID,
-      //"Sales_Representative__c": payload.data.SalesRepresentative,
-      //"OwnerId": if(isEmpty(payload.data.SalesRepresentative)) "" else payload.data.SalesRepresentative
+      //"Sales_Representative__c": vars.salesRepresentative,
+      "Sales_Representative__c": if(sizeOf(vars.query)== 1)vars.query[0].Id else vars.query[0].Id,
+      
+      //"OwnerId": vars.salesRepresentative,
+      "OwnerId": if(sizeOf(vars.query)== 1)vars.query[0].Id else vars.query[0].Id,
+      "LastModifiedOn__c": payload.data.LastModifiedOn
       
     }
   ]
