@@ -1,6 +1,9 @@
 %dw 2.0
 output application/json
-var operationName = payload.data.payload.ChangeEventHeader.changeType as String ++ "-CUSTOMER"
+var operationName = payload.data.payload.ChangeEventHeader.changeType as String 
+					++ "-" ++
+					if(payload.data.payload.ChangeEventHeader.entityName == "Account")  "CUSTOMER" 
+					else "CONTACT"
 ---
 {
 	"type": "httpRequest",

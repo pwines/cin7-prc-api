@@ -26,6 +26,8 @@ vars.requestPayload.httpRequest.headers]]]></http:headers>
 			<logger level="DEBUG" doc:name="Log Inbound" doc:id="8ffdc2a5-ebfc-4593-84b0-10eda5468b1b" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "Log Inbound",&#10;  MetaData: "Request to cin system api completed",&#10;  correlationId: correlationId,&#10;  data: payload&#10;}]'/>
 			<choice doc:name="Choice" doc:id="a9c47974-fd5c-468c-b084-ce44c5945431" >
 				<when expression="#[attributes.statusCode == 200 or attributes.statusCode == 201]">
+					<set-variable value="#[payload.data.SalesRepresentative]" doc:name="salesRepresentative" doc:id="3d865c03-9709-4a80-8d48-0c8ef848c50b" variableName="salesRepresentative"/>
+					<flow-ref doc:name="check-sales-representative-subflow" doc:id="0a5a43a4-a6f3-46c5-8493-03d968c9f2bf" name="check-sales-representative-subflow"/>
 					<ee:dynamic-evaluate doc:name="SF Request" doc:id="4c2a7c2b-8c61-4f0a-99f4-bd7e0e130b58" expression="#[readUrl(&quot;classpath://dwls/&quot; ++ (vars.requestPayload.responseDwl as String) ++ &quot;.dwl&quot;, 'text/plain')]"/>
 					<flow-ref doc:name="request-to-salesforce-upsert-subflow" doc:id="0541afa4-8ffe-4923-b631-0f5914a69b40" name="request-to-salesforce-upsert-subflow" />
 				</when>
