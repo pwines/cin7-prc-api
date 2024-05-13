@@ -9,84 +9,24 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<ee:message >
 			</ee:message>
 			<ee:variables >
-				<ee:set-variable variableName="contact" ><![CDATA[%dw 2.0
-output application/json
----
-flatten(payload.CustomerDetailsList map ((item, index) ->
-
-{account__c: item.ID ,
-Data: item.Contacts map (item, index) -> 
-{Cin7ID__c: item.ID,
-LastName: item.Name,
-Phone: item.Phone,
-MobilePhone: item.MobilePhone,
-Fax: item.Fax,
-Email: item.Email,
-Website__c: item.Website,
-Comment__c: item.Comment,
-Default__c: item.Default,
-Include_In_Emails__c:item.IncludeInEmail,
-//LastModifiedOn__c:
-//Cin7_AccountID__c
-}
-}
- ))]]></ee:set-variable>
-				<ee:set-variable variableName="customer" ><![CDATA[%dw 2.0
-output application/json
-import modules::lookUp as dl
----[
-    payload.LocationList map ((item, index) ->{location: item.ID}),
-payload.CustomerDetailsList map ((item, index) -> 
-{
-    Cin7ID__c: item.ID,
-Name: item.Name,
-Status__c: item.Status,
-Currency__c: item.Currency,
-Payment_Term__c: item.PaymentTerm,
-AccountReceivable__c:item.AccountReceivable,
-Tax_Rule__c: item.TaxRule,
-Location_Name__c:item.Location,
-Discount__c: item.Discount,
-Comments__c:item.Comments,
-Credit_Limit__c: item.CreditLimit,
-Tags__c:item.Tags,
-Attribute_Set__c:item.AttributeSet,
-On_Credit_Hold__c:item.IsOnCreditHold,
-Price_tier__c: item.PriceTier,
-Default_Carrier__c: item.Carrier,
-Sales_Representative__c: if(sizeOf(vars.query)== 1)vars.query[0].Id else vars.query[0].Id,
-OwnerId: if(sizeOf(vars.query)== 1)vars.query[0].Id else vars.query[0].Id,
-Tax_number__c: item.TaxNumber,
-LastModifiedOn__c: item.LastModifiedOn,
-"Revenue_Account__c": dl::getAccountType(item.RevenueAccount as String),
-})]]]></ee:set-variable>
-				<ee:set-variable variableName="address" ><![CDATA[%dw 2.0
-output application/json
----[payload.LocationList map ((item, index) ->{location: item.ID}),
-payload.CustomerDetailsList map ((item, index) ->
-Data: item.Addresses map ((item, index) -> 
-{
-Cin7ID__c: item.ID,
-street: item.Line1 ++ item.Line2,
-city: item.City,
-state: item.State,
-postalCode: item.Postcode,
-country: item.Country,
-AddressType: item.Type,
-DefaultForType__c: item.DefaultForType
-})
- )]]]></ee:set-variable>
-				<ee:set-variable variableName="location" ><![CDATA[%dw 2.0
-output application/json
----
-    payload.LocationList map ((item, index) ->{
-    Cin7ID__c: item.ID,
-Name: item.Name,
-IsDefault__c: item.IsDefault
-})]]></ee:set-variable>
+				<ee:set-variable resource="dwls/var-sf-contact-upsert-reg.dwl" variableName="contact" />
+				<ee:set-variable resource="dwls/var-sf-location-upsert-reg.dwl" variableName="location" />
+				<ee:set-variable resource="dwls/var-sf-address-upsert-reg.dwl" variableName="address" />
+				<ee:set-variable resource="dwls/var-sf-customer-upsert-reg.dwl" variableName="customer" />
 			</ee:variables>
 		</ee:transform>
-		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "objectName": "Location",&#10;  "externalField": "Cin7ID__c",&#10;  "data": vars.location&#10;}]' doc:name="Set Location upsert Payload" doc:id="4aa9e0c5-2caa-4143-b442-5acb2df1182c" />
+		<ee:transform doc:name="Location Upsert Payload" doc:id="dacf6659-44b0-4814-b705-b553a8d069e5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "objectName": "Location",
+  "externalField": "Cin7ID__c",
+  "data": vars.location
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 		<try doc:name="Try" doc:id="35d7a7f0-1619-436f-a743-acb4e42fd135" >
 			<flow-ref doc:name="request-to-salesforce-upsert-subflow" doc:id="3919e2f6-f4f4-4e90-9048-c7621f35fc8e" name="request-to-salesforce-upsert-subflow" />
 			<error-handler >
@@ -99,14 +39,34 @@ output application/json
 {
 	errorCode: error.muleMessage.typedAttributes.statusCode default 500,
 	errorDescription: error.muleMessage.typedValue.errorDescription default error.description,
-	message: vars.errorContext default "Error occurred while processing the request in PW-cin7-prc-api"
+	message: vars.errorContext default "Error occurred while processing the request in pw-cin7-prc-api"
 }]]></ee:set-payload>
 						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="entity" ><![CDATA["Location Sync"]]></ee:set-variable>
+							<ee:set-variable variableName="system" ><![CDATA["Cin7 to Salesforce sync."]]></ee:set-variable>
+						</ee:variables>
 					</ee:transform>
+					<flow-ref doc:name="send-email-subflow" doc:id="868944f7-7705-4670-8a4a-f4d4f9394d7b" name="send-email-subflow"/>
 				</on-error-propagate>
 			</error-handler>
 		</try>
-		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "objectName": "Account",&#10;  "externalField": "Cin7ID__c",&#10;  "data": [vars.customer[1][0] ++ {&#10;    Default_Location__r: {&#10;        Cin7ID__c: vars.customer[0][0].location&#10;    }&#10;}]&#10;}]' doc:name="Set Customer upsert Payload" doc:id="e080c907-06ba-4b87-b984-70555b9a6120" />
+		<ee:transform doc:name="Cusomers Upsert Payload" doc:id="52977dc6-1b7c-4a02-9b8b-38f87f85b249" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "objectName": "Account",
+  "externalField": "Cin7ID__c",
+  "data": [vars.customer[1][0] ++ {
+    Default_Location__r: {
+        Cin7ID__c: vars.customer[0][0].location
+    }
+}]
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 		<try doc:name="Try" doc:id="1ac99de8-bb89-47c2-92d6-f943923f901f" >
 			<flow-ref doc:name="request-to-salesforce-upsert-subflow" doc:id="43afe35e-d8cd-4fd9-9fb2-d10f4f4933b7" name="request-to-salesforce-upsert-subflow" />
 			<error-handler >
@@ -119,53 +79,116 @@ output application/json
 {
 	errorCode: error.muleMessage.typedAttributes.statusCode default 500,
 	errorDescription: error.muleMessage.typedValue.errorDescription default error.description,
-	message: vars.errorContext default "Error occurred while processing the request in PW-cin7-prc-api"
+	message: vars.errorContext default "Error occurred while processing the request in pw-cin7-prc-api"
 }]]></ee:set-payload>
 						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="system" ><![CDATA["Cin7 to Salesforce sync."]]></ee:set-variable>
+							<ee:set-variable variableName="entity" ><![CDATA["Customer Sync"]]></ee:set-variable>
+						</ee:variables>
 					</ee:transform>
+					<flow-ref doc:name="send-email-subflow" doc:id="dea85164-45bf-4a41-b747-218453fac118" name="send-email-subflow"/>
 				</on-error-propagate>
 			</error-handler>
 		</try>
-		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{(vars.contact map (item) -&gt; {&#10;  "objectName": "Contact",&#10;  "externalField": "Cin7ID__c",&#10;  "data": item.Data map ((contact) -&gt; contact ++ {Account: {"Cin7ID__c": item.account__c}})&#10;})}]' doc:name="Set Contacts upsert Payload" doc:id="61104825-77cc-4200-b8ff-14df29aaf6bb" />
-		<try doc:name="Try" doc:id="904e04f5-88a6-4666-aad7-d7e2ce64f52d" >
+		<choice doc:name="Choice" doc:id="a4d549b6-13e6-4f65-8f5e-e960139720c9" >
+			<when expression="#[!isEmpty(vars.contact.Data[0])]">
+				<ee:transform doc:name="Contacts Upsert Payload" doc:id="d1269f7d-c7a4-4e9a-abda-148698f11a0f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{(vars.contact map (item) -> {
+  "objectName": "Contact",
+  "externalField": "Cin7ID__c",
+  "data": item.Data map ((contact) -> contact ++ {Account: {"Cin7ID__c": item.account__c}})
+})}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<try doc:name="Try" doc:id="904e04f5-88a6-4666-aad7-d7e2ce64f52d">
 			<flow-ref doc:name="request-to-salesforce-upsert-subflow" doc:id="3760dfa9-d4d4-432d-ae0d-d8dc3f226cf9" name="request-to-salesforce-upsert-subflow" />
-			<error-handler >
-				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="beae5984-760d-43fe-8a80-6eb1ade0545d" >
-					<ee:transform doc:name="Error Payload" doc:id="6f098ef4-8b71-44dd-88cb-1d120ea16d35" >
-						<ee:message >
-							<ee:set-payload ><![CDATA[%dw 2.0
+			<error-handler>
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="beae5984-760d-43fe-8a80-6eb1ade0545d">
+					<ee:transform doc:name="Error Payload" doc:id="6f098ef4-8b71-44dd-88cb-1d120ea16d35">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
 	errorCode: error.muleMessage.typedAttributes.statusCode default 500,
 	errorDescription: error.muleMessage.typedValue.errorDescription default error.description,
-	message: vars.errorContext default "Error occurred while processing the request in PW-cin7-prc-api"
+	message: vars.errorContext default "Error occurred while processing the request in pw-cin7-prc-api"
 }]]></ee:set-payload>
 						</ee:message>
+								<ee:variables >
+									<ee:set-variable variableName="system" ><![CDATA["Cin7 to Salesforce sync."]]></ee:set-variable>
+									<ee:set-variable variableName="entity" ><![CDATA["Contact Sync"]]></ee:set-variable>
+								</ee:variables>
 					</ee:transform>
+							<flow-ref doc:name="send-email-subflow" doc:id="043b7b3b-7e53-4888-a401-e83699fd2db3" name="send-email-subflow"/>
 				</on-error-continue>
 			</error-handler>
 		</try>
-		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "objectName": "Address",&#10;  "externalField": "Cin7ID__c",&#10;  "data": flatten(vars.address[1][0].Data map ((address, index) -&gt; {&#10;    Cin7ID__c: address.Cin7ID__c,&#10;    street: address.street,&#10;    city: address.city,&#10;    state: address.state,&#10;    postalCode: address.postalCode,&#10;    country: address.country,&#10;    AddressType: address.AddressType,&#10;    DefaultForType__c: address.DefaultForType__c,&#10;    Parent: {&#10;        Cin7ID__c: vars.address[0][0].location&#10;    }&#10;}))&#10;}]' doc:name="Set Addresses upsert Payload" doc:id="4daab4b2-ebab-4c83-8d05-a401a553135d" />
-		<try doc:name="Try" doc:id="8c84c455-cd9c-46b8-affe-7bbb37e5c2c3" >
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Null Payload Log" doc:id="54c71a16-3ce9-4149-b3fa-9d918952e8e4" message="No record to process for contact sync"/>
+			</otherwise>
+		</choice>
+		<choice doc:name="Choice" doc:id="24f00715-0432-4bcf-b13f-c8e1b8c0cc2a" >
+			<when expression="#[!isEmpty(vars.address..Data[0])]">
+				<ee:transform doc:name="Addresses Upsert Payload" doc:id="4433ebd6-9863-47e9-aaeb-962c7fac520a">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "objectName": "Address",
+  "externalField": "Cin7ID__c",
+  "data": flatten(vars.address[1][0].Data map ((address, index) -> {
+    Cin7ID__c: address.Cin7ID__c,
+    street: address.street,
+    city: address.city,
+    state: address.state,
+    postalCode: address.postalCode,
+    country: address.country,
+    AddressType: address.AddressType,
+    DefaultForType__c: address.DefaultForType__c,
+    Parent: {
+        Cin7ID__c: vars.address[0][0].location
+    }
+}))
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<try doc:name="Try" doc:id="8c84c455-cd9c-46b8-affe-7bbb37e5c2c3">
 			<flow-ref doc:name="request-to-salesforce-upsert-subflow" doc:id="aa827e9d-1bdf-4957-8c9d-e3ff15c09d38" name="request-to-salesforce-upsert-subflow" />
-			<error-handler >
-				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5250f98c-e430-4418-91f6-534ec6340fca" >
-					<ee:transform doc:name="Error Payload" doc:id="c2dd1e3f-96b4-486a-8faf-3e27fec7dedf" >
-						<ee:message >
-							<ee:set-payload ><![CDATA[%dw 2.0
+			<error-handler>
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5250f98c-e430-4418-91f6-534ec6340fca">
+					<ee:transform doc:name="Error Payload" doc:id="c2dd1e3f-96b4-486a-8faf-3e27fec7dedf">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
 	errorCode: error.muleMessage.typedAttributes.statusCode default 500,
 	errorDescription: error.muleMessage.typedValue.errorDescription default error.description,
-	message: vars.errorContext default "Error occurred while processing the request in PW-cin7-prc-api"
+	message: vars.errorContext default "Error occurred while processing the request in pw-cin7-prc-api"
 }]]></ee:set-payload>
 						</ee:message>
+								<ee:variables >
+									<ee:set-variable variableName="system" ><![CDATA["Cin7 to Salesforce sync."]]></ee:set-variable>
+									<ee:set-variable variableName="entity" ><![CDATA["Address Sync"]]></ee:set-variable>
+								</ee:variables>
 					</ee:transform>
+							<flow-ref doc:name="send-email-subflow" doc:id="18c60e94-3afe-47b8-8f11-246993ff22e5" name="send-email-subflow"/>
 				</on-error-continue>
 			</error-handler>
 		</try>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Null Payload Log" doc:id="96520d3f-585a-4528-803c-b4bb4e4202ab" message="No record to process for contact sync"/>
+			</otherwise>
+		</choice>
 		<error-handler >
 			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="3a2083d6-182b-40f7-9973-35e868316c36" >
 				<ee:transform doc:name="Error Payload" doc:id="597267ce-15b3-44fb-b30f-2282d3683be6" >
@@ -176,10 +199,15 @@ output application/json
 {
 	errorCode: error.muleMessage.typedAttributes.statusCode default 500,
 	errorDescription: error.muleMessage.typedValue.errorDescription default error.description,
-	message: vars.errorContext default "Error occurred while processing the request in PW-cin7-prc-api"
+	message: vars.errorContext default "Error occurred while processing the request in pw-cin7-prc-api"
 }]]></ee:set-payload>
 					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="entity" ><![CDATA["pw-cin7-prc-api"]]></ee:set-variable>
+						<ee:set-variable variableName="system" ><![CDATA["Cin7 to Salesforce sync."]]></ee:set-variable>
+					</ee:variables>
 				</ee:transform>
+				<flow-ref doc:name="send-email-subflow" doc:id="e7612f93-c3bc-47ae-b457-01c3f54a8806" name="send-email-subflow"/>
 			</on-error-propagate>
 		</error-handler>
 	</flow>
