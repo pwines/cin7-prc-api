@@ -10,7 +10,7 @@ var item = payload.requestBody.payload
     TaxRule: item.Tax_Rule__c default "GST on Income",
     Carrier: item.Default_Carrier__c default "DEFAULT Carrier",
     SalesRepresentative: item.Sales_Representative__c default "Jez Prideaux",
-    Location: item.Default_Location__c default "14 Degrees",
+    Location: item.Location_Name__c default "14 Degrees",
     Comments: item.Comments__c,
     AccountReceivable: item.AccountReceivable__c default "610",
     RevenueAccount: item.Revenue_Account__c default "200",
