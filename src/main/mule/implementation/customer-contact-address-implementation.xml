@@ -47,7 +47,6 @@ output application/json
 							<ee:set-variable variableName="system" ><![CDATA["Cin7 to Salesforce sync."]]></ee:set-variable>
 						</ee:variables>
 					</ee:transform>
-					<flow-ref doc:name="send-email-subflow" doc:id="868944f7-7705-4670-8a4a-f4d4f9394d7b" name="send-email-subflow"/>
 				</on-error-propagate>
 			</error-handler>
 		</try>
@@ -87,7 +86,6 @@ output application/json
 							<ee:set-variable variableName="entity" ><![CDATA["Customer Sync"]]></ee:set-variable>
 						</ee:variables>
 					</ee:transform>
-					<flow-ref doc:name="send-email-subflow" doc:id="dea85164-45bf-4a41-b747-218453fac118" name="send-email-subflow"/>
 				</on-error-propagate>
 			</error-handler>
 		</try>
@@ -203,8 +201,16 @@ output application/json
 }]]></ee:set-payload>
 					</ee:message>
 					<ee:variables >
-						<ee:set-variable variableName="entity" ><![CDATA["pw-cin7-prc-api"]]></ee:set-variable>
-						<ee:set-variable variableName="system" ><![CDATA["Cin7 to Salesforce sync."]]></ee:set-variable>
+						<ee:set-variable variableName="entity" ><![CDATA[%dw 2.0
+output application/json
+---
+vars.entity default "pw-cin7-prc-api"]]></ee:set-variable>
+						<ee:set-variable variableName="system" ><![CDATA[%dw 2.0
+output application/json
+---
+vars.system default "Cin7 to Salesforce sync."
+
+]]></ee:set-variable>
 					</ee:variables>
 				</ee:transform>
 				<flow-ref doc:name="send-email-subflow" doc:id="e7612f93-c3bc-47ae-b457-01c3f54a8806" name="send-email-subflow"/>

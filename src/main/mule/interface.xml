@@ -14,7 +14,8 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="cin7-prc-api-config" />
+        <logger level="INFO" doc:name="Request Logger" doc:id="c1bbac4c-4efa-4726-8bcd-1299445f2ccd" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "Request Logger",&#10;  MetaData: "Request received in cin7-prc-api",&#10;  correlationId: correlationId,&#10;  payload: payload&#10;}]'/>
+		<apikit:router config-ref="cin7-prc-api-config" />
     </flow>
     <flow name="put:\salesOrders:application\json:cin7-prc-api-config">
         <ee:transform doc:name="Transform Message">
