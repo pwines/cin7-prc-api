@@ -102,14 +102,15 @@ output application/json
     </flow>
     <flow name="account-change-event-flow" doc:id="02ff29d2-d68e-4620-baf0-f18807c45bda">
 		<salesforce:subscribe-channel-listener streamingChannel="${salesforce.account-event}" doc:name="Account-Contact Change Event Listener" doc:id="ea8dbf4c-0dbe-4879-aac8-b10a4b7c1c02" config-ref="Salesforce_Config"/>
-		<logger level="INFO" doc:name="Log Start" doc:id="abb2f30f-122e-4b7b-b016-5535552913d0" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "ENTRY",&#10;  MetaData: "Cin7-process-api Customer event started",&#10;  correlationId: correlationId&#10;}]'/>
+		<logger level="INFO" doc:name="Request Logger" doc:id="46e70389-c8e0-4215-9a4c-2f9fe4ae66bd" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "Request Logger",&#10;  MetaData: "Request received in cin7-prc-api Customer/Contact event",&#10;  correlationId: correlationId,&#10;  payload: payload&#10;}]' />
 		<ee:transform doc:name="Create Request" doc:id="a405a06a-094a-4262-91e2-7c7b046a5cc9" >
 			<ee:message >
 				<ee:set-payload resource="dwls/msg-req-parameter-customer.dwl" />
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Log Start" doc:id="abb2f30f-122e-4b7b-b016-5535552913d0" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "ENTRY",&#10;  MetaData: "Cin7-process-api Customer event started",&#10;  correlationId: correlationId&#10;}]' />
 		<flow-ref doc:name="sf-cin7-implementationSub_Flow" doc:id="c4b55e72-1208-4d96-bdb2-63d079edc44a" name="sf-cin7-implementationSub_Flow"/>
-		<logger level="INFO" doc:name="Log Exit" doc:id="2fa568a1-4d2b-46f2-8ce3-7eeda9c0d13c" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "EXIT",&#10;  MetaData: "Ended upsert in Cin7, and syncing back response in Salesforce",&#10;  correlationId: correlationId&#10;}]'/>
+		<logger level="INFO" doc:name="Log Exit" doc:id="2fa568a1-4d2b-46f2-8ce3-7eeda9c0d13c" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "EXIT",&#10;  MetaData: "Ended upsert in Cin7 and also synced the response back to Salesforce",&#10;  correlationId: correlationId&#10;}]'/>
 	</flow>
 	<flow name="contact-change-event-flow" doc:id="7fbbb02a-3eec-4fee-a1e2-7c5f9a3e256a" initialState="stopped">
 		<salesforce:subscribe-channel-listener streamingChannel="${salesforce.contact-event}" doc:name="Contact Change Event Listener" doc:id="26ee0b7f-871f-4c31-9f94-9c3a15a5a04a" config-ref="Salesforce_Config"/>
@@ -122,7 +123,7 @@ output application/json
 		<flow-ref doc:name="sf-cin7-implementationSub_Flow" doc:id="cf503c84-4eae-4e8d-ba09-a40c386f9807" name="sf-cin7-implementationSub_Flow" />
 		<logger level="INFO" doc:name="Log Exit" doc:id="4049ee64-c6a1-4864-ad98-b8a392980996" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "EXIT",&#10;  MetaData: "Ended upsert in Cin7 and synced it back in Salesforce",&#10;  correlationId: correlationId&#10;}]' />
 	</flow>
-	<flow name="interfaceFlow" doc:id="e7843c1e-18aa-4261-9216-8ec8167b97dc" >
+	<flow name="interfaceFlow" doc:id="e7843c1e-18aa-4261-9216-8ec8167b97dc" initialState="stopped">
 		<http:listener doc:name="Listener" doc:id="8caa3049-f327-4885-8cbb-7138d2cc492a" config-ref="HTTP_Listener_config" path="/test"/>
 		<flow-ref doc:name="Flow Reference" doc:id="ec0e6758-ba99-4975-afe1-f76fff733d11" name="account-change-event-flow"/>
 	</flow>

@@ -25,7 +25,7 @@ var item = payload.requestBody.payload
     CreditLimit: item.Credit_Limit__c,
     IsOnCreditHold: item.On_Credit_Hold__c,
     LastModifiedOn: item.LastModifiedDate,
-    AdditionalAttribute1: "",
+    AdditionalAttribute1: item.AdditionalAttribute1__c,
     AdditionalAttribute2: "",
     AdditionalAttribute3: "",
     AdditionalAttribute4: "",

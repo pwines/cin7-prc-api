@@ -15,7 +15,8 @@ var request = vars.requestPayload.requestBody.payload
       
       //"OwnerId": vars.salesRepresentative,
       "OwnerId": if(sizeOf(vars.query)== 1)vars.query[0].Id else vars.query[0].Id,
-      "LastModifiedOn__c": payload.data.LastModifiedOn
+      "LastModifiedOn__c": payload.data.LastModifiedOn,
+      "Error_log__c": ""
       
     }
   ]

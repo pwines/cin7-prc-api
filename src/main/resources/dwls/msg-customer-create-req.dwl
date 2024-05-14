@@ -22,7 +22,7 @@ var item = payload.requestBody.payload
     CreditLimit: item.Credit_Limit__c default 0,
     IsOnCreditHold: item.On_Credit_Hold__c,
     LastModifiedOn: item.LastModifiedDate,
-    AdditionalAttribute1: "",
+    AdditionalAttribute1: items.AdditionalAttribute1__c default "",
     AdditionalAttribute2: "",
     AdditionalAttribute3: "",
     AdditionalAttribute4: "",
