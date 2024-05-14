@@ -26,4 +26,5 @@ OwnerId: if(sizeOf(vars.query)== 1)vars.query[0].Id else vars.query[0].Id,
 Tax_number__c: item.TaxNumber,
 LastModifiedOn__c: item.LastModifiedOn,
 "Revenue_Account__c": dl::getAccountType(item.RevenueAccount as String),
+AdditionalAttribute1__c: item.AdditionalAttribute1
 })]

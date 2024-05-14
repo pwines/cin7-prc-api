@@ -15,6 +15,7 @@ Website__c: item.Website,
 Comment__c: item.Comment,
 Default__c: item.Default,
 Include_In_Emails__c:item.IncludeInEmail,
+Job_Title__c: item.JobTitle
 //LastModifiedOn__c:
 //Cin7_AccountID__c
 }
