@@ -18,7 +18,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<logger level="INFO" doc:name="Logger" doc:id="efd7fc67-ef3a-43c8-b4cc-6b104c534a5a" message='#["Sending Email"]' />
 		<parse-template doc:name="Parse Template" doc:id="5223219c-6300-40d3-8a57-9d2acf11a091" location="error-response.html" target="emailContent"/>
 		<try doc:name="Try" doc:id="94c7c4a8-1338-40f5-879d-0935ca69eec7" >
-			<email:send doc:name="Send Email" doc:id="29fdaedd-97da-40dd-a676-67b85cfb0e7e" config-ref="Email_SMTP" fromAddress='#[Mule::p("email.from")]' subject="#[&quot;CRITICAL: &quot; ++ vars.entity ++ &quot;: Integration Failure : &quot; ++ p('mule.env') ++ &quot; Environment&quot;]" toAddresses='#[Mule::p("email.recipients") splitBy ","]'>
+			<email:send doc:name="Send Email" doc:id="29fdaedd-97da-40dd-a676-67b85cfb0e7e" config-ref="Email_SMTP" fromAddress='#[Mule::p("email.from")]' subject="#[&quot;CRITICAL: &quot; ++ vars.entity ++ &quot;: Integration Failure : &quot; ++ upper(p('mule.env')) ++ &quot; Environment&quot;]" toAddresses='#[Mule::p("email.recipients") splitBy ","]'>
 			<email:body contentType="text/html">
 				<email:content><![CDATA[#[vars.emailContent]]]></email:content>
 			</email:body>
