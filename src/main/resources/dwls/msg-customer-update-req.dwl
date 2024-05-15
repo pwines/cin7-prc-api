@@ -12,7 +12,7 @@ var item = payload.requestBody.payload
     //Discount: item,
     TaxRule: item.Tax_Rule__c,
     Carrier: item.Default_Carrier__c,
-    SalesRepresentative: item.Sales_Representative__c,
+    SalesRepresentative: item.Sales_Representative_Name__c,
     Location: item.Location_Name__c,
     Comments: item.Comments__c,
     AccountReceivable: item.AccountReceivable__c,

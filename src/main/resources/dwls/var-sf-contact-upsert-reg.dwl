@@ -1,12 +1,16 @@
 %dw 2.0
 output application/json
+import * from dw::core::Strings
 ---
 flatten(payload.CustomerDetailsList map ((item, index) ->
 
 {account__c: item.ID ,
 Data: item.Contacts map (item, index) -> 
 {Cin7ID__c: item.ID,
-LastName: item.Name,
+//LastName: item.Name,
+(FirstName :(item.Name splitBy  (" "))[0]) if(sizeOf(item.Name splitBy  (" ")) > 1),
+LastName: if(sizeOf(item.Name splitBy  (" ")) > 1) substringAfter(item.Name, " ") 
+		  else item.Name,
 Phone: item.Phone,
 MobilePhone: item.MobilePhone,
 Fax: item.Fax,

@@ -27,3 +27,7 @@ fun getAccountType(AccountType)=
 	else if (AccountType =="287") "287: Sundry Income"
 	else if (AccountType =="291") "291: Government Grants & JobKeeper Subsidies"
 	else null
+	
+fun getAccountReceivableType(accountReceivable)=
+	if (accountReceivable =="610") "610: Accounts Receivable"
+	else "610: Accounts Receivable"

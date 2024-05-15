@@ -16,6 +16,7 @@ var contact = payload.requestBody.payload
 			Phone: contact.Phone,
 			Fax: contact.Fax,
 			Website: contact.Website__c,
+			JobTitle: contact.Job_Title__c,
 			LastModifiedOn: contact.LastModifiedOn__c
 		}
 	]
