@@ -20,7 +20,7 @@ var item = payload.requestBody.payload
     PriceTier: item.PriceTier__c,
     //TaxNumber: item,
     //AttributeSet: item.Attribute_Set__c,
-    AttributeSet: "Customer Attributes",
+    AttributeSet: item.Attribute_Set__c,
     Tags: item.Tags__c,
     Status: item.Status__c,
     CreditLimit: item.Credit_Limit__c,

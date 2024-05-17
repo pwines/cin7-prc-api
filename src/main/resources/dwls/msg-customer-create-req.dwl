@@ -17,7 +17,7 @@ var item = payload.requestBody.payload
     PriceTier: item.PriceTier__c default "Wholesale",
     TaxNumber: item.Tax_number__c,
     //AttributeSet: item.Attribute_Set__c default "Customer Attributes",
-    AttributeSet: "Customer Attributes",
+    AttributeSet: item.Attribute_Set__c default "Customer Attributes",
     Tags: item.Tags__c,
     Status: item.Status__c default "",
     CreditLimit: item.Credit_Limit__c default 0,

@@ -23,7 +23,7 @@ output application/json
 {
   "objectName": "Location",
   "externalField": "Cin7ID__c",
-  "data": vars.location
+  "data": vars.location[0].Data
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -140,22 +140,28 @@ output application/json
 output application/json
 ---
 {
-  "objectName": "Address",
+  "objectName": "CustomerAddress__c",
   "externalField": "Cin7ID__c",
-  "data": flatten(vars.address[1][0].Data map ((address, index) -> {
-    Cin7ID__c: address.Cin7ID__c,
-    street: address.street,
-    city: address.city,
-    state: address.state,
-    postalCode: address.postalCode,
-    country: address.country,
-    AddressType: address.AddressType,
-    DefaultForType__c: address.DefaultForType__c,
-    Parent: {
-        Cin7ID__c: vars.address[0][0].location
-    }
-}))
-}]]></ee:set-payload>
+  "data": vars.address[0].Data
+}
+
+//{
+//  "objectName": "Address",
+//  "externalField": "Cin7ID__c",
+//  "data": flatten(vars.address[1][0].Data map ((address, index) -> {
+//    Cin7ID__c: address.Cin7ID__c,
+//    street: address.street,
+//    city: address.city,
+//    state: address.state,
+//    postalCode: address.postalCode,
+//    country: address.country,
+//    AddressType: address.AddressType,
+//    DefaultForType__c: address.DefaultForType__c,
+//    Parent: {
+//        Cin7ID__c: vars.address[0][0].location
+//    }
+//}))
+//}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 				<try doc:name="Try" doc:id="8c84c455-cd9c-46b8-affe-7bbb37e5c2c3">
