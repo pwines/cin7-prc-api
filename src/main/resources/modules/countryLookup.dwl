@@ -248,3 +248,5 @@ var countries = [
 ]
 
 fun getCountryCode(country) = (countries filter((item) -> item.name == country))[0].code
+
+fun getCountryName(country) = (countries filter((item) -> item.code == country))[0].name

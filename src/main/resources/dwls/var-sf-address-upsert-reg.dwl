@@ -22,9 +22,9 @@ var accountCin7Id = payload.CustomerDetailsList[0].ID
             Account__r: {
                 Cin7ID__c: accountCin7Id
             },
-            Location__r: {
-                Cin7ID__c: item.ID
-            }
+//            Location__r: {
+//                Cin7ID__c: item.ID
+//            }
         })       
 
     )

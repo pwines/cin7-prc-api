@@ -100,8 +100,8 @@ output application/json
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="account-change-event-flow" doc:id="02ff29d2-d68e-4620-baf0-f18807c45bda">
-		<salesforce:subscribe-channel-listener streamingChannel="${salesforce.account-event}" doc:name="Account-Contact Change Event Listener" doc:id="ea8dbf4c-0dbe-4879-aac8-b10a4b7c1c02" config-ref="Salesforce_Config"/>
+    <flow name="account-contact-address-change-event-flow" doc:id="02ff29d2-d68e-4620-baf0-f18807c45bda">
+		<salesforce:subscribe-channel-listener streamingChannel="${salesforce.account-event}" doc:name="Account-Contact-Address Change Event Listener" doc:id="ea8dbf4c-0dbe-4879-aac8-b10a4b7c1c02" config-ref="Salesforce_Config"/>
 		<logger level="INFO" doc:name="Request Logger" doc:id="46e70389-c8e0-4215-9a4c-2f9fe4ae66bd" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "Request Logger",&#10;  MetaData: "Request received in cin7-prc-api Customer/Contact event",&#10;  correlationId: correlationId,&#10;  payload: payload&#10;}]' />
 		<ee:transform doc:name="Create Request" doc:id="a405a06a-094a-4262-91e2-7c7b046a5cc9" >
 			<ee:message >
@@ -125,6 +125,6 @@ output application/json
 	</flow> [STUDIO] -->
 	<!-- [STUDIO:"interfaceFlow"]<flow name="interfaceFlow" doc:id="e7843c1e-18aa-4261-9216-8ec8167b97dc" initialState="stopped">
 		<http:listener doc:name="Listener" doc:id="8caa3049-f327-4885-8cbb-7138d2cc492a" config-ref="HTTP_Listener_config" path="/test"/>
-		<flow-ref doc:name="Flow Reference" doc:id="ec0e6758-ba99-4975-afe1-f76fff733d11" name="account-change-event-flow"/>
+		<flow-ref doc:name="Flow Reference" doc:id="ec0e6758-ba99-4975-afe1-f76fff733d11" name="account-contact-address-change-event-flow"/>
 	</flow> [STUDIO] -->
 </mule>

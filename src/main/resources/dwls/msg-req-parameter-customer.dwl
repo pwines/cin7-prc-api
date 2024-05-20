@@ -3,7 +3,8 @@ output application/json
 var operationName = payload.data.payload.ChangeEventHeader.changeType as String 
 					++ "-" ++
 					if(payload.data.payload.ChangeEventHeader.entityName == "Account")  "CUSTOMER" 
-					else "CONTACT"
+					else if(payload.data.payload.ChangeEventHeader.entityName == "Contact") "CONTACT"
+					else "ADDRESS"
 ---
 {
 	"type": "httpRequest",
@@ -18,9 +19,9 @@ var operationName = payload.data.payload.ChangeEventHeader.changeType as String
 		},
 		"headers": {
 			"x-correlation-id": correlationId,
-			"client_id": "d32c6443074d4e99a955e39a65030cab",
-//  			"client_secret": Mule::p('secure::cin7-sys-api.client_secret')
-  			"client_secret": "002E80255e1c4FD7aFC467d3E0fF89D8"
+
+  			"client_id": Mule::p('secure::cin7-sys-api.client_id'),
+  			"client_secret": Mule::p('secure::cin7-sys-api.client_secret')
 		},
 	},
 	"operation": operationName,

@@ -10,24 +10,8 @@ var defLocation = payload.LocationList[0]
 
     
     payload.CustomerDetailsList map ((customer, index) ->
-        Data: customer.Addresses map ((item, index) -> 
-        {
-            Name: if(item.Type == "Shipping") item.Line2 else item.Line1,
-            Cin7ID__c: item.ID,
-
-            //Type__c: item.Type,
-            //DefaultForType__c: item.DefaultForType,
-            Address__City__s: item.City,
-            Address__Street__s: if(item.Type == "Shipping") item.Line2 
-            					else item.Line1 default "" ++ item.Line2 default "",
-            Address__PostalCode__s: item.Postcode,
-            Address__StateCode__s: item.State,
-            Address__CountryCode__s: countries::getCountryCode(item.Country as String),
-            //(Delivery_Instruction__c: item.Line1) if(item.Type == 'Shipping')
-         })  
-
-        ++
-        [{
+        Data: 
+          [{
             Name: defLocation.Name,
             Cin7ID__c: defLocation.ID,
 
@@ -38,13 +22,31 @@ var defLocation = payload.LocationList[0]
             Address__PostalCode__s: defLocation.AddressZipPostCode,
             Address__StateCode__s: defLocation.AddressStateProvince,
             Address__CountryCode__s: countries::getCountryCode(defLocation.AddressCountry as String),
-            //Delivery_Instruction__c: defLocation.AddressLine1
+
         }]
         
 
     )
  
 
+
+//customer.Addresses map ((item, index) -> 
+//        {
+//            Name: if(item.Type == "Shipping") item.Line2 else item.Line1,
+//            Cin7ID__c: item.ID,
+//
+//            //Type__c: item.Type,
+//            //DefaultForType__c: item.DefaultForType,
+//            Address__City__s: item.City,
+//            Address__Street__s: if(item.Type == "Shipping") item.Line2 
+//            					else item.Line1 default "" ++ item.Line2 default "",
+//            Address__PostalCode__s: item.Postcode,
+//            Address__StateCode__s: item.State,
+//            Address__CountryCode__s: countries::getCountryCode(item.Country as String),
+//            //(Delivery_Instruction__c: item.Line1) if(item.Type == 'Shipping')
+//         })  
+//
+//        ++
 
 
 

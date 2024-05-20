@@ -36,6 +36,7 @@ output application/json
 							<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
+//vars.errorContext default "Error occurred while processing the request in pw-cin7-prc-api"
 {
 	errorCode: error.muleMessage.typedAttributes.statusCode default 500,
 	errorDescription: error.muleMessage.typedValue.errorDescription default error.description,
@@ -75,6 +76,7 @@ output application/json
 							<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
+//vars.errorContext default "Error occurred while processing the request in pw-cin7-prc-api"
 {
 	errorCode: error.muleMessage.typedAttributes.statusCode default 500,
 	errorDescription: error.muleMessage.typedValue.errorDescription default error.description,
@@ -219,6 +221,7 @@ vars.system default "Cin7 to Salesforce sync."
 ]]></ee:set-variable>
 					</ee:variables>
 				</ee:transform>
+				<logger level="INFO" doc:name="Log Error" doc:id="87776b3e-8ea9-43c7-a62a-2bc1cccd226f" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  flowName: flow.name,&#10;  apiName: app.name,&#10;  Name: "Log Error",&#10;  MetaData: "Error while syncing data to salesforce",&#10;  correlationId: correlationId,&#10;  errorPayload: payload&#10;}]'/>
 				<flow-ref doc:name="send-email-subflow" doc:id="e7612f93-c3bc-47ae-b457-01c3f54a8806" name="send-email-subflow"/>
 			</on-error-propagate>
 		</error-handler>
